@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ESP32 File Explorer</title>
+</head>
+<body>
+  <h1>ESP32 File Explorer</h1>
+  <h2>File List</h2>
+  <div id="fileList"></div>
+  <h2>Upload File</h2>
+  <input type="file" id="fileInput"><br>
+  <button onclick="uploadFile()">Upload</button>
+
+  <script>
+    // Function to list files
+    function listFiles() {
+      fetch('/list')
+        .then(response => response.text())
+        .then(data => document.getElementById('fileList').innerText = data);
+    }
+
+    // Function to upload file
+    function uploadFile() {
+      var fileInput = document.getElementById('fileInput');
+      var file = fileInput.files[0];
+      var formData = new FormData();
+      formData.append('file', file);
+
+      fetch('/upload', {
+        method: 'POST',
+        body: formData
+      }).then(response => response.text())
+        .then(data => {
+          console.log('File Uploaded');
+          listFiles(); // Refresh file list
+        });
+    }
+
+    // Call listFiles on page load
+    listFiles();
+  </script>
+</body>
+</html>
